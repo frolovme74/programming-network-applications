@@ -1,1 +1,6 @@
-# programming-network-applications
+<h1>Лабораторная работа 2. Calculator. JavaScript</h1>
+Цель данной лабораторной работы - знакомство с инструментами построения пользовательских интерфейсов web-сайтов: HTML, CSS, JavaScript. В ходе выполнения работы, вам предстоит продолжить реализовывать простой калькулятор, и затем выполнить задания по варианту.
+<br><br>
+<ul>
+<li><a href="https://github.com/iu5git/JavaScript/blob/main/tutorials/lab1/README.md">Методические указания</a></li>
+</ul>
