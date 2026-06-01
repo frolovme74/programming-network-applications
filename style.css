@@ -190,3 +190,50 @@ body {
     height: 3px;
     background: #67c1f5;
 }
+/* Базовый класс для всех кнопок в стиле Steam */
+.btn-steam {
+    border: none;
+    border-radius: 2px; /* В Steam кнопки почти квадратные */
+    padding: 6px 15px;
+    font-size: 14px;
+    font-family: "Motiva Sans", Arial, Helvetica, sans-serif;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+/* Зеленая кнопка (Добавить, Создать, Сохранить) — как кнопка «В корзину» или «Играть» */
+.btn-steam-green {
+    background: linear-gradient(90deg, #75b022 0%, #588a1b 100%);
+    color: #fff;
+}
+.btn-steam-green:hover {
+    background: linear-gradient(90deg, #8ed62a 0%, #6aa720 100%);
+    color: #fff;
+}
+
+/* Сине-серая кнопка (Редактировать, Отмена) — как стандартные кнопки интерфейса Steam */
+.btn-steam-blue {
+    background: linear-gradient(to bottom, #214b6b 0%, #12283a 100%);
+    color: #66c0f4;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.btn-steam-blue:hover {
+    background: linear-gradient(to bottom, #2b6897 0%, #18364f 100%);
+    color: #ffffff;
+}
+
+/* Красная кнопка (Удалить) — в стиле критических уведомлений Steam */
+.btn-steam-red {
+    background: linear-gradient(to bottom, #aa3333 0%, #661111 100%);
+    color: #ffcccc;
+}
+.btn-steam-red:hover {
+    background: linear-gradient(to bottom, #d94141 0%, #8a2020 100%);
+    color: #ffffff;
+}

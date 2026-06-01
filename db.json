@@ -1,20 +1,53 @@
 {
   "stocks": [
     {
-      "id": 1,
-      "title": "Cyberpunk 2077",
-      "price": "2000₽",
-      "src": "https://example.com/cyberpunk.jpg",
-      "description": "Лучшая игра про будущее.",
-      "likes": 10
+      "id": "1",
+      "title": "Risk of Rain 2",
+      "src": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/632360/header.jpg?t=1775753930",
+      "price": "890 ₽",
+      "likes": 5,
+      "description": "Выберитесь с хаотичной неизвестной планеты, отбиваясь от полчищ безумных монстров в одиночку или с друзьями. Неожиданным образом сочетайте найденные предметы и постигайте все особенности персонажей, пока сами не станете разрушительной силой, вселяющей ужас в противников."
     },
     {
-      "id": 2,
+      "id": "2",
+      "title": "Tom Clancy's Rainbow Six Siege",
+      "src": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/359550/ac4f6daf0d8afee2754e9964077a9a7d5bdb8ab8/header_alt_assets_20.jpg?t=1775836354",
+      "price": "Free to Play",
+      "likes": 7,
+      "description": "Rainbow Six® Осада – эталон тактических командных шутеров, где побеждают высококлассные стратегия и исполнение. Получите бесплатный доступ к быстрым и безрейтинговым играм, а также режиму Dual Front с избранными оперативниками."
+    },
+    {
+      "id": "3",
+      "title": "Hollow Knight: Silksong",
+      "src": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1030300/7983574d464e6559ac7e24275727f73a8bcca1f3/header.jpg?t=1776125736",
+      "price": "710 ₽",
+      "likes": -6,
+      "description": "Исследуйте огромное проклятое царство в Hollow Knight: Silksong! Открывайте его тайны, сражайтесь и боритесь за свою жизнь, поднимаясь к вершинам земель, где правят шёлк и песня."
+    },
+    {
+      "id": "4",
       "title": "The Witcher 3",
-      "price": "1500₽",
-      "src": "https://example.com/witcher.jpg",
-      "description": "Классика RPG.",
-      "likes": 50
+      "src": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/header.jpg",
+      "price": "1199 ₽",
+      "likes": 1,
+      "description": "Вы — Геральт из Ривии, наемный убийца чудовищ. Вы путешествуете по миру, в котором бушует война и на каждом шагу подстерегают чудовища. Вам предстоит выполнить заказ и найти Цири — Дитя Предназначения, живое оружие, способное изменить облик этого мира."
+    },
+    {
+      "id": "5",
+      "title": "Elden Ring",
+      "src": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg",
+      "price": "3999 ₽",
+      "likes": 0,
+      "description": "НОВЫЙ ФЭНТЕЗИЙНЫЙ РОЛЕВОЙ БОЕВИК. Восстань, погасшая душа! Междуземье ждёт своего повелителя. Пусть благодать приведёт тебя к Кольцу Элден."
+    },
+    {
+      "title": "Grand Theft Auto V Enhanced",
+      "price": "14.99$",
+      "src": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3240220/header.jpg?t=1765479644",
+      "description": "Погрузитесь в хиты – Grand Theft Auto V и Grand Theft Auto Online – улучшенные для нового поколения. Потрясающая графика, ускоренная загрузка, 3D-звук и многое другое, а также эксклюзивные материалы для игроков GTA Online.",
+      "likes": 9,
+      "id": "DXrGwvTIWSU"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
