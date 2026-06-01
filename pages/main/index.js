@@ -1,66 +1,54 @@
 import { GameCardComponent } from "../../components/game-card/index.js";
 import { ProductPage } from "../product/index.js";
-
-const GAMES_DATA = [
-    { id: 1, title: "Risk of Rain 2", src: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/632360/header.jpg?t=1775753930", price: "890 ₽", likes: 0, description: "Выберитесь с хаотичной неизвестной планеты, отбиваясь от полчищ безумных монстров в одиночку или с друзьями. Неожиданным образом сочетайте найденные предметы и постигайте все особенности персонажей, пока сами не станете разрушительной силой, вселяющей ужас в противников." },
-    { id: 2, title: "Tom Clancy's Rainbow Six Siege", src: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/359550/ac4f6daf0d8afee2754e9964077a9a7d5bdb8ab8/header_alt_assets_20.jpg?t=1775836354", price: "Free to Play", likes: 0, description: "Rainbow Six® Осада – эталон тактических командных шутеров, где побеждают высококлассные стратегия и исполнение. Получите бесплатный доступ к быстрым и безрейтинговым играм, а также режиму Dual Front с избранными оперативниками." },
-    { id: 3, title: "Hollow Knight: Silksong", src: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1030300/7983574d464e6559ac7e24275727f73a8bcca1f3/header.jpg?t=1776125736", price: "710 ₽", likes: 0, description: "Исследуйте огромное проклятое царство в Hollow Knight: Silksong! Открывайте его тайны, сражайтесь и боритесь за свою жизнь, поднимаясь к вершинам земель, где правят шёлк и песня." },
-    { id: 4, title: "The Witcher 3", src: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/header.jpg", price: "1199 ₽", likes: 0, description: "Вы — Геральт из Ривии, наемный убийца чудовищ. Вы путешествуете по миру, в котором бушует война и на каждом шагу подстерегают чудовища. Вам предстоит выполнить заказ и найти Цири — Дитя Предназначения, живое оружие, способное изменить облик этого мира." },
-    { id: 5, title: "Elden Ring", src: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg", price: "3999 ₽", likes: 0, description: "НОВЫЙ ФЭНТЕЗИЙНЫЙ РОЛЕВОЙ БОЕВИК. Восстань, погасшая душа! Междуземье ждёт своего повелителя. Пусть благодать приведёт тебя к Кольцу Элден." }
-];
+import { ajax } from "../../modules/ajax.js";
+import { stockUrls } from "../../modules/stockUrls.js";
 
 export class MainPage {
     constructor(parent) {
         this.parent = parent;
-        this.data = GAMES_DATA; 
-    }
-
-    handleReaction(id, type) {
-        const game = this.data.find(item => item.id === id);
-        
-        if (type === 'like') {
-            game.likes++;
-        } else {
-            game.likes--;
-        }
-
-        const counterElement = document.getElementById(`counter-${id}`);
-        
-        if (counterElement) {
-            counterElement.textContent = game.likes > 0 ? '+' + game.likes : game.likes;
-        }
-    }
-
-    get pageRoot() {
-        return document.getElementById('main-page');
     }
 
     getHTML() {
         return `
-            <div class="container mt-4">
-                <div class="main-header-area mb-4">
-                    <h2 class="steam-title">МАГАЗИН</h2>
-                </div>
-                <div id="main-page" class="d-flex flex-wrap justify-content-center"></div>
+            <div id="main-page" class="container mt-5">
+                <h1 class="text-white mb-4">Магазин игр</h1>
+                <div class="row row-cols-1 row-cols-md-3 g-4" id="cards-container">
+                    </div>
             </div>
         `;
+    }
+
+    getData() {
+        // 1. Делаем GET запрос к серверу за списком игр
+        ajax.get(stockUrls.getStocks(), (data) => {
+            if (data) {
+                this.renderData(data);
+            }
+        });
+    }
+
+    renderData(items) {
+        const container = document.getElementById('cards-container');
+        if (!container) return;
+
+        // 2. Отрисовываем каждую карточку из полученного массива
+        items.forEach((item) => {
+            const gameCard = new GameCardComponent(container);
+            gameCard.render(item, this.clickCard.bind(this));
+        });
+    }
+
+    clickCard(data) {
+        // ВАЖНО: Передаем в конструктор страницы только id, а не весь объект
+        const productPage = new ProductPage(this.parent, data.id);
+        productPage.render();
     }
 
     render() {
         this.parent.innerHTML = '';
         this.parent.insertAdjacentHTML('beforeend', this.getHTML());
-
-        this.data.forEach((item) => {
-            const gameCard = new GameCardComponent(this.pageRoot);
-            gameCard.render(item);
-
-            const cardElement = document.getElementById(`card-${item.id}`);
-            if (cardElement) {
-                cardElement.onclick = () => {
-                    const productPage = new ProductPage(this.parent, item);
-                    productPage.render(this.handleReaction.bind(this));
-                };
-            }
-        });
+        
+        // Запрашиваем данные после того, как каркас страницы появился в DOM
+        this.getData();
     }
 }

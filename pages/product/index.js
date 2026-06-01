@@ -1,12 +1,22 @@
 import { BackButtonComponent } from "../../components/back-button/index.js";
 import { MainPage } from "../main/index.js";
+import { ajax } from "../../modules/ajax.js";
+import { stockUrls } from "../../modules/stockUrls.js";
+
 export class ProductPage {
-    constructor(parent, gameData) {
+    // Изменили: теперь принимаем id вместо gameData
+    constructor(parent, id) {
         this.parent = parent;
-        this.game = gameData;
+        this.id = id;
+        this.game = null; // Данные изначально пустые
     }
 
     getHTML() {
+        // Если данные еще не скачались, показываем заглушку
+        if (!this.game) {
+            return `<div class="container mt-5 text-center text-white"><h3>Загрузка данных об игре...</h3></div>`;
+        }
+
         return `
             <div id="product-page" class="container mt-5">
                 <div class="row bg-dark-steam p-4 shadow-lg text-white">
@@ -17,7 +27,6 @@ export class ProductPage {
                         <h1 class="display-5 fw-bold">${this.game.title}</h1>
                         <p class="text-info h4 mb-3">${this.game.price}</p>
                         
-
                         <div class="game-description mt-2">
                             <p style="color: #acb2b8;">${this.game.description}</p>
                         </div>
@@ -37,29 +46,53 @@ export class ProductPage {
         `;
     }
 
-    addListeners(onVote) {
-        document.getElementById('like-btn').onclick = () => onVote(this.game.id, 'like');
-        document.getElementById('dislike-btn').onclick = () => onVote(this.game.id, 'dislike');
-    }
-
-
-render(onVote) {
-    this.parent.innerHTML = '';
-    this.parent.insertAdjacentHTML('beforeend', this.getHTML());
-
-    this.addListeners(onVote);
-
-    const backBtnContainer = document.getElementById('back-btn-container');
-    
-    if (backBtnContainer) {
-        const backButton = new BackButtonComponent(backBtnContainer);
-        
-        backButton.render(() => {
-            const mainPage = new MainPage(this.parent);
-            mainPage.render();
+    getData() {
+        // Делаем запрос к API по ID игры
+        ajax.get(stockUrls.getStockById(this.id), (data) => {
+            if (data) {
+                this.game = data; // Сохраняем скачанные данные
+                this.renderData(); // Перерисовываем страницу уже с данными
+            }
         });
-    } else {
-        console.error("Контейнер 'back-btn-container' не найден в HTML");
     }
-}
+
+    addListeners(onVote) {
+        // Проверяем, появились ли кнопки (чтобы не было ошибки)
+        const likeBtn = document.getElementById('like-btn');
+        const dislikeBtn = document.getElementById('dislike-btn');
+        
+        if (likeBtn && dislikeBtn && onVote) {
+            likeBtn.onclick = () => onVote(this.game.id, 'like');
+            dislikeBtn.onclick = () => onVote(this.game.id, 'dislike');
+        }
+    }
+
+    renderData() {
+        // Метод для финальной отрисовки, когда данные уже пришли
+        this.parent.innerHTML = '';
+        this.parent.insertAdjacentHTML('beforeend', this.getHTML());
+
+        // Временная функция-заглушка для лайков (ее можно доработать под твой вариант)
+        this.addListeners((id, type) => {
+            console.log(`Проголосовали за игру ${id}, тип: ${type}`);
+        });
+
+        const backBtnContainer = document.getElementById('back-btn-container');
+        if (backBtnContainer) {
+            const backButton = new BackButtonComponent(backBtnContainer);
+            backButton.render(() => {
+                const mainPage = new MainPage(this.parent);
+                mainPage.render();
+            });
+        }
+    }
+
+    render() {
+        // Сначала очищаем экран и пишем "Загрузка..."
+        this.parent.innerHTML = '';
+        this.parent.insertAdjacentHTML('beforeend', this.getHTML());
+
+        // Запускаем скачивание
+        this.getData();
+    }
 }
