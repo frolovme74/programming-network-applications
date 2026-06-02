@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр модели</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body style="overflow: hidden; padding: 0; margin: 0; min-height: 100vh;">
+
+    <div style="position: absolute; top: 20px; left: 20px; z-index: 10;">
+        <button class="btn-steam-back" onclick="window.location.href='index.html'">← В Мастерскую</button>
+
+        <div class="game-description" style="margin-top: 20px; width: 320px;">
+            <h3 class="card-title" style="font-size: 18px !important;">Интерактивный просмотр</h3>
+            <p class="card-text" style="margin-bottom: 0;">Используйте левую кнопку мыши для вращения, и колесико для масштабирования.</p>
+        </div>
+    </div>
+
+    <div id="loader" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #67c1f5; font-size: 24px; font-weight: bold; letter-spacing: 2px; z-index: 5;">
+        ЗАГРУЗКА ДАННЫХ...
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script type="module" src="detail.js"></script>
+</body>
+</html>
