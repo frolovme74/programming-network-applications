@@ -7,7 +7,7 @@ export class ProductPage {
     constructor(parent, id) {
         this.parent = parent;
         this.id = id;
-        this.game = null; 
+        this.game = null;
     }
 
     getHTML() {
@@ -24,11 +24,11 @@ export class ProductPage {
                     <div class="col-md-6 d-flex flex-column">
                         <h1 class="display-5 fw-bold">${this.game.title}</h1>
                         <p class="text-info h4 mb-3">${this.game.price}</p>
-                        
+
                         <div id="description-block" class="game-description mt-2">
                             <p id="game-desc-text" style="color: #acb2b8;">${this.game.description}</p>
                         </div>
-                        
+
                         <div class="mb-3 d-flex align-items-center gap-3 mt-3">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-outline-success" id="like-btn">👍</button>
@@ -51,13 +51,12 @@ export class ProductPage {
         `;
     }
 
-    getData() {
-        ajax.get(stockUrls.getStockById(this.id), (data) => {
-            if (data) {
-                this.game = data;
-                this.renderData();
-            }
-        });
+    async getData() {
+        const data = await ajax.get(stockUrls.getStockById(this.id));
+        if (data) {
+            this.game = data;
+            this.renderData();
+        }
     }
 
     addListeners() {
@@ -65,7 +64,7 @@ export class ProductPage {
         const dislikeBtn = document.getElementById('dislike-btn');
         const editBtn = document.getElementById('edit-btn');
         const deleteBtn = document.getElementById('delete-btn');
-        
+
         if (likeBtn && dislikeBtn) {
             likeBtn.onclick = (e) => { e.preventDefault(); this.updateLikes(1); };
             dislikeBtn.onclick = (e) => { e.preventDefault(); this.updateLikes(-1); };
@@ -79,14 +78,14 @@ export class ProductPage {
         }
 
         if (deleteBtn) {
-            deleteBtn.onclick = (e) => {
+            deleteBtn.onclick = async (e) => {
                 e.preventDefault();
-                if (confirm("Вы уверены, что хотите удалить эту игру?")) {
-                    ajax.delete(stockUrls.removeStockById(this.id), () => {
+                    const success = await ajax.delete(stockUrls.removeStockById(this.id));
+                    if (success) {
                         const mainPage = new MainPage(this.parent);
                         mainPage.render();
-                    });
-                }
+                    }
+
             };
         }
     }
@@ -108,25 +107,22 @@ export class ProductPage {
             </div>
         `;
 
-        document.getElementById('save-desc-btn').onclick = (e) => {
+        document.getElementById('save-desc-btn').onclick = async (e) => {
             e.preventDefault();
             const newDesc = document.getElementById('edit-desc-textarea').value;
-            
+
             if (newDesc && newDesc !== this.game.description) {
-                ajax.patch(stockUrls.updateStockById(this.id), { description: newDesc }, (updatedData) => {
-                    if (updatedData) {
-                        this.game.description = updatedData.description;
-                        this.turnOffEditMode();
-                    }
-                });
-            } else {
-                this.turnOffEditMode();
+                const updatedData = await ajax.patch(stockUrls.updateStockById(this.id), { description: newDesc });
+                if (updatedData) {
+                    this.game.description = updatedData.description;
+                }
             }
+            this.turnOffEditMode();
         };
 
         document.getElementById('cancel-desc-btn').onclick = (e) => {
             e.preventDefault();
-            this.turnOffEditMode(); 
+            this.turnOffEditMode();
         };
     }
 
@@ -136,21 +132,19 @@ export class ProductPage {
         if (!descBlock || !editBtn) return;
 
         editBtn.style.display = 'inline-block';
-
         descBlock.innerHTML = `<p id="game-desc-text" style="color: #acb2b8;">${this.game.description}</p>`;
     }
 
-    updateLikes(change) {
+    async updateLikes(change) {
         const newLikes = this.game.likes + change;
-        ajax.patch(stockUrls.updateStockById(this.id), { likes: newLikes }, (updatedData) => {
-            if (updatedData) {
-                this.game.likes = updatedData.likes;
-                const counterSpan = document.getElementById(`counter-${this.id}`);
-                if (counterSpan) {
-                    counterSpan.innerText = this.game.likes > 0 ? '+' + this.game.likes : this.game.likes;
-                }
+        const updatedData = await ajax.patch(stockUrls.updateStockById(this.id), { likes: newLikes });
+        if (updatedData) {
+            this.game.likes = updatedData.likes;
+            const counterSpan = document.getElementById(`counter-${this.id}`);
+            if (counterSpan) {
+                counterSpan.innerText = this.game.likes > 0 ? '+' + this.game.likes : this.game.likes;
             }
-        });
+        }
     }
 
     renderData() {

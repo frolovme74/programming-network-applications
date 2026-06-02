@@ -1,4 +1,12 @@
-import {MainPage} from "./pages/main/index.js";
+import { MainPage } from "./pages/main/index.js";
+
+const root = document.getElementById('root');
+const mainPage = new MainPage(root);
+
+document.addEventListener("DOMContentLoaded", () => {
+    mainPage.render();
+    mainPage.getData();
+});
 
 class App {
     constructor() {
@@ -8,8 +16,7 @@ class App {
     render() {
 
         const mainPage = new MainPage(this.root);
-        
-        // Вызываем отрисовку
+
         mainPage.render();
     }
 }

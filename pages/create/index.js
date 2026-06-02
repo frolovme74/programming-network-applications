@@ -38,8 +38,8 @@ export class CreatePage {
 
     addListeners() {
         const form = document.getElementById('create-game-form');
-        
-        form.addEventListener('submit', (e) => {
+
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const newGame = {
@@ -50,19 +50,18 @@ export class CreatePage {
                 likes: 0
             };
 
-            ajax.post(stockUrls.createStock(), newGame, (data) => {
-                if (data) {
-                    const mainPage = new MainPage(this.parent);
-                    mainPage.render();
-                }
-            });
+            const data = await ajax.post(stockUrls.createStock(), newGame);
+            if (data) {
+                const mainPage = new MainPage(this.parent);
+                mainPage.render();
+            }
         });
     }
 
     render() {
         this.parent.innerHTML = '';
         this.parent.insertAdjacentHTML('beforeend', this.getHTML());
-        
+
         this.addListeners();
 
         const backBtnContainer = document.getElementById('back-btn-container');

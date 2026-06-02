@@ -1,90 +1,37 @@
 class Ajax {
-    /**
-     * GET запрос (получение данных)
-     * @param {string} url - Адрес запроса
-     * @param {function} callback - Функция обратного вызова (data, status)
-     */
-    get(url, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.send();
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                this._handleResponse(xhr, callback);
-            }
+    async _send(method, url, data = null) {
+        const options = {
+            method: method,
+            headers: {}
         };
-    }
 
-    /**
-     * POST запрос (создание новых данных)
-     * @param {string} url - Адрес запроса
-     * @param {object} data - Данные для отправки
-     * @param {function} callback - Функция обратного вызова (data, status)
-     */
-    post(url, data, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(data));
+        if (data) {
+            options.headers['Content-Type'] = 'application/json';
+            options.body = JSON.stringify(data);
+        }
 
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                this._handleResponse(xhr, callback);
-            }
-        };
-    }
-
-    /**
-     * PATCH запрос (частичное обновление существующих данных)
-     * @param {string} url - Адрес запроса
-     * @param {object} data - Данные для обновления
-     * @param {function} callback - Функция обратного вызова (data, status)
-     */
-    patch(url, data, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('PATCH', url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(data));
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                this._handleResponse(xhr, callback);
-            }
-        };
-    }
-
-    /**
-     * DELETE запрос (удаление данных)
-     * @param {string} url - Адрес запроса
-     * @param {function} callback - Функция обратного вызова (data, status)
-     */
-    delete(url, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('DELETE', url);
-        xhr.send();
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                this._handleResponse(xhr, callback);
-            }
-        };
-    }
-
-    /**
-     * Обработчик ответа (приватный метод)
-     * @param {XMLHttpRequest} xhr - Объект запроса
-     * @param {function} callback - Функция обратного вызова
-     */
-    _handleResponse(xhr, callback) {
         try {
-            const data = xhr.responseText ? JSON.parse(xhr.responseText) : null;
-            callback(data, xhr.status);
-        } catch (e) {
-            console.error('Ошибка парсинга JSON:', e);
-            callback(null, xhr.status);
+            const response = await fetch(url, options);
+
+            if (!response.ok) {
+                throw new Error(`Ошибка HTTP: ${response.status}`);
+            }
+
+            if (response.status === 204 || method === 'DELETE') {
+                return true;
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error(`Ошибка при выполнении [${method}] запроса к ${url}:`, error);
+            return null;
         }
     }
+
+    async get(url) { return this._send('GET', url); }
+    async post(url, data) { return this._send('POST', url, data); }
+    async patch(url, data) { return this._send('PATCH', url, data); }
+    async delete(url) { return this._send('DELETE', url); }
 }
 
 export const ajax = new Ajax();

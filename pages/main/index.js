@@ -22,12 +22,11 @@ export class MainPage {
         `;
     }
 
-    getData() {
-        ajax.get(stockUrls.getStocks(), (data) => {
-            if (data) {
-                this.renderData(data);
-            }
-        });
+    async getData() {
+        const data = await ajax.get(stockUrls.getStocks());
+        if (data) {
+            this.renderData(data);
+        }
     }
 
     renderData(items) {
@@ -35,7 +34,6 @@ export class MainPage {
         if (!container) return;
 
         container.innerHTML = '';
-
         items.forEach((item) => {
             const gameCard = new GameCardComponent(container);
             gameCard.render(item, this.clickCard.bind(this));
@@ -50,7 +48,7 @@ export class MainPage {
     render() {
         this.parent.innerHTML = '';
         this.parent.insertAdjacentHTML('beforeend', this.getHTML());
-        
+
         this.getData();
 
         const addGameBtn = document.getElementById('add-game-btn');
