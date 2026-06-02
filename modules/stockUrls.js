@@ -15,12 +15,10 @@ class StockUrls {
         return `${this.baseUrl}/stocks`;
     }
 
-    // Исправлено: добавлен аргумент id
     removeStockById(id) {
         return `${this.baseUrl}/stocks/${id}`;
     }
 
-    // Исправлено: добавлен аргумент id
     updateStockById(id) {
         return `${this.baseUrl}/stocks/${id}`;
     }
